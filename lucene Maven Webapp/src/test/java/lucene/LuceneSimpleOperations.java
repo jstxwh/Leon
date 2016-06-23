@@ -77,6 +77,7 @@ public class LuceneSimpleOperations {
 	public void before() throws IOException {
 		Map<String,Analyzer> map=new HashMap<String,Analyzer>();
 		map.put("Value", new CustomAnalyzer());
+		//第一个参数为默认Analyzer
 		analyzer = new PerFieldAnalyzerWrapper(new KeywordAnalyzer(),map);
 		config = new IndexWriterConfig(analyzer);
 		writer = new IndexWriter(FSDirectory.open(Paths.get("D:/Download/index")), config);
