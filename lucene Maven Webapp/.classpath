@@ -29,8 +29,8 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="D:/Software/apache-tomcat-8.0.26/lib/jsp-api.jar"/>
-	<classpathentry kind="lib" path="D:/Software/apache-tomcat-8.0.26/lib/servlet-api.jar"/>
-	<classpathentry kind="lib" path="D:/ZHConverter.jar"/>
+	<classpathentry kind="lib" path="C:/Software/ZHConverter.jar"/>
+	<classpathentry kind="lib" path="C:/Software/apache-tomcat-7.0.67/lib/jsp-api.jar"/>
+	<classpathentry kind="lib" path="C:/Software/apache-tomcat-7.0.67/lib/servlet-api.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
