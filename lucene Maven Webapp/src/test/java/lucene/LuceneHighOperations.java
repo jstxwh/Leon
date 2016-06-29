@@ -146,6 +146,7 @@ public class LuceneHighOperations {
 		QueryParser parser = new QueryParser("Value", new StandardAnalyzer());
 		Query query = parser.parse("Name:Lucene AND \"Hello World\"~5");
 		FunctionQuery function=new FunctionQuery(new ValueSource(){
+			@SuppressWarnings("rawtypes")
 			@Override
 			public FunctionValues getValues(Map context,
 					LeafReaderContext readerContext) throws IOException {
