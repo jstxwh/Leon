@@ -19,7 +19,7 @@ public interface WebSiteService {
 	public void addWebSite(WebSite webSite);
 	public void addBatchWebSite(String path) throws Exception;
 	public void removeWebSite(WebSite webSite);
-	public void removeAll();
+	public void removeAll() throws Exception;
 	public void modifyWebSite(WebSite webSite);
 	public WebSite queryWebSite(WebSite webSite);
 	public List<WebSite> queryWebSiteByCondition(String condition,int pageNum,int num) throws Exception;

@@ -12,7 +12,6 @@ import java.util.Properties;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
-import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.DirectoryReader;
@@ -21,6 +20,8 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.MultiReader;
 import org.apache.lucene.store.FSDirectory;
+
+import analyzer.AbbreviationAnalyzer;
 
 /**
  * <p><b>Description:</b> 索引创建、读写的工具类</p>
@@ -55,7 +56,7 @@ public class IndexUtil {
 		}
 	}
 	public static Analyzer getAnalyzer(){
-		fieldAnalyzer.put("sname", new SimpleAnalyzer());
+		fieldAnalyzer.put("sname", new AbbreviationAnalyzer());
 		fieldAnalyzer.put("username", new KeywordAnalyzer());
 		fieldAnalyzer.put("password", new KeywordAnalyzer());
 		return new PerFieldAnalyzerWrapper(new StandardAnalyzer(),fieldAnalyzer);

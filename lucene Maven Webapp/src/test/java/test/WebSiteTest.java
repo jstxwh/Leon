@@ -3,10 +3,18 @@
  */
 package test;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.junit.Test;
 
 import service.WebSiteService;
 import service.impl.WebSiteServiceImpl;
+import analyzer.AbbreviationAnalyzer;
+import entity.WebSite;
 
 /**
  * <p><b>Description:</b> WebSite测试</p>
@@ -19,12 +27,36 @@ import service.impl.WebSiteServiceImpl;
 public class WebSiteTest {
 	private static WebSiteService service=new WebSiteServiceImpl();
 	@Test
-	public void queryWebSiteByConditionTest() throws Exception{
-		String condition="jstxwh Saka";
+	public void countByConditionTest() throws Exception{
+		String condition="S";
 		System.out.println(service.countByCondition(condition));
 	}
 	@Test
 	public void addBatchWebSiteTest() throws Exception{
-		service.addBatchWebSite("D:/Personal/资料.xlsx");
+		service.addBatchWebSite("C:/资料.xlsx");
+	}
+	@Test
+	public void removeAllTest() throws Exception{
+		service.removeAll();
+	}
+	@Test 
+	public void queryWebSiteByConditionTest() throws Exception{
+		List<WebSite> list = service.queryWebSiteByCondition("jstxwh", 15, 2);
+		System.out.println(list==null?"null":list.size());
+		if(list!=null)
+			for(WebSite w:list)
+				System.out.println(w);
+	}
+	@Test
+	public void abbreviationAnalyzerTest() throws IOException{
+		Analyzer analyzer=new AbbreviationAnalyzer();
+		TokenStream stream = analyzer.tokenStream("sname","HD-S");
+		CharTermAttribute attribute = stream.getAttribute(CharTermAttribute.class);
+		stream.reset();
+		while(stream.incrementToken())
+			System.out.println(attribute.toString()+"----");
+		stream.end();
+		stream.close();
+		analyzer.close();
 	}
 }

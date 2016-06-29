@@ -80,7 +80,7 @@ public class LuceneSimpleOperations {
 		//第一个参数为默认Analyzer
 		analyzer = new PerFieldAnalyzerWrapper(new KeywordAnalyzer(),map);
 		config = new IndexWriterConfig(analyzer);
-		writer = new IndexWriter(FSDirectory.open(Paths.get("D:/Download/index")), config);
+		writer = new IndexWriter(FSDirectory.open(Paths.get("C:/index")), config);
 	}
 	@Test
 	public void analyzerTest(){
@@ -105,7 +105,7 @@ public class LuceneSimpleOperations {
 		type.setStored(true);//可以选择是否存储，默认为false
 		type.setIndexOptions(IndexOptions.DOCS);//默认为null
 		type.setOmitNorms(true);//表示是否存储norms信息
-		type.setTokenized(true);//如果设置为false，表示不被Analyze，默认为true
+		type.setTokenized(true);//如果设置为false，表示不被Analyze，默认为true，如果设置为false，则查询时由于找不到索引而无法查询
 		Document doc = new Document();
 		doc.add(new IntPoint("Age",15));
 		doc.add(new FloatDocValuesField("Score", 80.5f));
