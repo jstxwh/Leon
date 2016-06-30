@@ -3,9 +3,12 @@
  */
 package dao;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.lucene.document.Document;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 
 import entity.WebSite;
 
@@ -18,13 +21,12 @@ import entity.WebSite;
  * @version 1.0
  */
 public interface WebSiteDao {
-	public void insertWebSite(WebSite webSite);
-	public void insertBatchWebSite(List<Document> docs) throws Exception;
-	public void deleteWebSite(WebSite webSite);
-	public void deleteAll() throws Exception;
-	public void updateWebSite(WebSite webSite);
-	public WebSite selectWebSite(WebSite webSite);
-	public List<WebSite> selectWebSiteByCondition(String condition,int pageNum,int num,int count) throws Exception;
-	public List<WebSite> selectAll();
-	public int countByCondition(String condition) throws Exception;
+	public void insertWebSite(Document doc) throws IOException;
+	public void insertBatchWebSite(List<Document> docs) throws IOException;
+	public void deleteWebSite(String condition) throws IOException, ParseException;
+	public void deleteAll() throws IOException;
+	public WebSite selectWebSite(int docId) throws IOException;
+	public List<WebSite> selectWebSiteByCondition(String condition,int pageNum,int num,int count) throws ParseException, IOException,InvalidTokenOffsetsException;
+	public List<WebSite> selectAll(int pageNum, int num,int count) throws IOException;
+	public int countByCondition(String condition)  throws ParseException, IOException;
 }

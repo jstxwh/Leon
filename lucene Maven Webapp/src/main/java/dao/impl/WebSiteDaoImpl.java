@@ -3,6 +3,7 @@
  */
 package dao.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,8 +11,10 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
@@ -19,6 +22,7 @@ import org.apache.lucene.search.TotalHitCountCollector;
 import org.apache.lucene.search.highlight.Formatter;
 import org.apache.lucene.search.highlight.GradientFormatter;
 import org.apache.lucene.search.highlight.Highlighter;
+import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.apache.lucene.search.highlight.QueryScorer;
 import org.apache.lucene.search.highlight.SimpleSpanFragmenter;
 
@@ -36,46 +40,53 @@ import entity.WebSite;
  */
 public class WebSiteDaoImpl implements WebSiteDao {
 
-	public void insertWebSite(WebSite webSite) {
+	public void insertWebSite(Document doc) throws IOException{
 		// TODO Auto-generated method stub
-		
+		IndexWriter writer=IndexUtil.getIndexWriter();
+		writer.addDocument(doc);
 	}
 
-	public void insertBatchWebSite(List<Document> docs) throws Exception {
+	public void insertBatchWebSite(List<Document> docs) throws IOException {
 		// TODO Auto-generated method stub
 		IndexWriter writer=IndexUtil.getIndexWriter();
 		writer.addDocuments(docs);
-		writer.commit();
 	}
 
-	public void deleteWebSite(WebSite webSite) {
+	public void deleteWebSite(String condition) throws IOException, ParseException {
 		// TODO Auto-generated method stub
-		
+		IndexWriter writer=IndexUtil.getIndexWriter();
+		QueryParser parser=new MultiFieldQueryParser(new String[]{"sname","fname","username","password","email","description"},IndexUtil.getAnalyzer());
+		Query query = parser.parse(condition);
+		writer.deleteDocuments(query);
 	}
 
-	public void deleteAll() throws Exception {
+	public void deleteAll() throws IOException {
 		// TODO Auto-generated method stub
 		IndexWriter writer = IndexUtil.getIndexWriter();
 		writer.deleteAll();
 	}
 
-	public void updateWebSite(WebSite webSite) {
+	public WebSite selectWebSite(int docId) throws IOException {
 		// TODO Auto-generated method stub
-		
+		IndexReader reader = IndexUtil.getIndexReader();
+		Document doc = reader.document(docId);
+		WebSite site=new WebSite();
+		site.setSname(doc.get("sname"));
+		site.setFname(doc.get("fname"));
+		site.setUsername(doc.get("username"));
+		site.setPassword(doc.get("password"));
+		site.setEmail(doc.get("email"));
+		site.setDescription(doc.get("description"));
+		return site;
 	}
 
-	public WebSite selectWebSite(WebSite webSite) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<WebSite> selectWebSiteByCondition(String condition,
-			int pageNum, int num,int count) throws Exception {
+	public List<WebSite> selectWebSiteByCondition(String condition,int pageNum, int num,int count) throws ParseException, IOException, InvalidTokenOffsetsException {
 		// TODO Auto-generated method stub
 		List<WebSite> sites=new ArrayList<WebSite>();
 		IndexReader reader = IndexUtil.getIndexReader();
 		IndexSearcher searcher=new IndexSearcher(reader);
 		QueryParser parser=new MultiFieldQueryParser(new String[]{"sname","fname","username","password","email","description"},IndexUtil.getAnalyzer());
+		parser.setAllowLeadingWildcard(true);//规定可以以*号开头
 		Query query = parser.parse(condition);
 		QueryScorer scorer=new QueryScorer(query);
 		Formatter formatter=new GradientFormatter(3,"#000000","#000000","#9AFF9A","#9AFF9A");
@@ -83,7 +94,7 @@ public class WebSiteDaoImpl implements WebSiteDao {
 		lighter.setTextFragmenter(new SimpleSpanFragmenter(scorer));
 		TopDocs docs = searcher.search(query, count);
 		ScoreDoc score[]=docs.scoreDocs;
-		for(int i=(num-1)*pageNum;i<(num*pageNum>count?count:num*pageNum);i++){
+		for(int i=(num-1)*pageNum;i<Math.min(count,num*pageNum);i++){
 			WebSite site=new WebSite();
 			Document doc = searcher.doc(score[i].doc);
 			String text=lighter.getBestFragment(IndexUtil.getAnalyzer(), "sname", doc.get("sname"));
@@ -103,12 +114,29 @@ public class WebSiteDaoImpl implements WebSiteDao {
 		return sites;
 	}
 
-	public List<WebSite> selectAll() {
+	public List<WebSite> selectAll(int pageNum, int num,int count) throws IOException {
 		// TODO Auto-generated method stub
-		return null;
+		IndexReader reader = IndexUtil.getIndexReader();
+		IndexSearcher searcher=new IndexSearcher(reader);
+		Query query=new MatchAllDocsQuery();
+		TopDocs docs = searcher.search(query, count);
+		ScoreDoc[] scores=docs.scoreDocs;
+		List<WebSite> sites=new ArrayList<WebSite>();
+		for(int i=(num-1)*pageNum;i<Math.min(count,num*pageNum);i++){
+			Document doc = searcher.doc(scores[i].doc);
+			WebSite site=new WebSite();
+			site.setSname(doc.getField("sname").stringValue());
+			site.setFname(doc.get("fname"));
+			site.setUsername(doc.get("username"));
+			site.setPassword(doc.get("password"));
+			site.setEmail(doc.get("email"));
+			site.setDescription(doc.get("description"));
+			sites.add(site);
+		}
+		return sites;
 	}
 
-	public int countByCondition(String condition) throws Exception {
+	public int countByCondition(String condition) throws ParseException, IOException {
 		// TODO Auto-generated method stub
 		IndexReader reader = IndexUtil.getIndexReader();
 		IndexSearcher searcher=new IndexSearcher(reader);
@@ -118,5 +146,4 @@ public class WebSiteDaoImpl implements WebSiteDao {
 		searcher.search(query, collector);
 		return collector.getTotalHits();
 	}
-
 }

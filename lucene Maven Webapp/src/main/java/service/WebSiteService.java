@@ -17,12 +17,11 @@ import entity.WebSite;
  */
 public interface WebSiteService {
 	public void addWebSite(WebSite webSite);
-	public void addBatchWebSite(String path) throws Exception;
-	public void removeWebSite(WebSite webSite);
-	public void removeAll() throws Exception;
-	public void modifyWebSite(WebSite webSite);
-	public WebSite queryWebSite(WebSite webSite);
-	public List<WebSite> queryWebSiteByCondition(String condition,int pageNum,int num) throws Exception;
-	public List<WebSite> queryAll();
-	public int countByCondition(String condition) throws Exception;
+	public void addBatchWebSite(String path);
+	public void removeWebSite(String condition);
+	public void removeAll();
+	public WebSite queryWebSite(int docId);
+	public List<WebSite> queryWebSiteByCondition(String condition,int pageNum,int num);
+	public List<WebSite> queryAll(int pageNum, int num);
+	public int countByCondition(String condition);
 }

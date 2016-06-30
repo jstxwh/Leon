@@ -5,11 +5,16 @@ package test;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.junit.Test;
+
+import timer.IndexTimerTask;
 
 import com.spreada.utils.chinese.ZHConverter;
 
@@ -45,5 +50,14 @@ public class SimpleTest {
 		}
 		stream.end();
 		analyzer.close();
+	}
+	/**
+	 * <p><b>Description:</b> 定时器测试，在JUnit测试中看不出来，用main()方法可见</p>
+	 */
+	@Test
+	public void timerTest(){
+		Timer time=new Timer();
+		TimerTask task=new IndexTimerTask();
+		time.scheduleAtFixedRate(task, new Date(), 1000);
 	}
 }

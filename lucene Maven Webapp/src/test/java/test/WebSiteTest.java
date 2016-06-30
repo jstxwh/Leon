@@ -1,6 +1,3 @@
-/**
- * 
- */
 package test;
 
 import java.io.IOException;
@@ -28,7 +25,7 @@ public class WebSiteTest {
 	private static WebSiteService service=new WebSiteServiceImpl();
 	@Test
 	public void countByConditionTest() throws Exception{
-		String condition="S";
+		String condition="Test";
 		System.out.println(service.countByCondition(condition));
 	}
 	@Test
@@ -41,7 +38,7 @@ public class WebSiteTest {
 	}
 	@Test 
 	public void queryWebSiteByConditionTest() throws Exception{
-		List<WebSite> list = service.queryWebSiteByCondition("jstxwh", 15, 2);
+		List<WebSite> list = service.queryWebSiteByCondition("xbt~", 15, 1);
 		System.out.println(list==null?"null":list.size());
 		if(list!=null)
 			for(WebSite w:list)
@@ -58,5 +55,20 @@ public class WebSiteTest {
 		stream.end();
 		stream.close();
 		analyzer.close();
+	}
+	@Test
+	public void addWebSiteTest() throws Exception{
+		WebSite webSite=new WebSite("Test","Test","Test","Test","Test","Test");
+		service.addWebSite(webSite);
+	}
+	@Test
+	public void removeWebSiteTest() throws Exception{
+		service.removeWebSite("sname:Test");
+	}
+	@Test
+	public void queryAllTest() throws Exception{
+		List<WebSite> sites=service.queryAll(50, 1);
+		for(WebSite s:sites)
+			System.out.println(s);
 	}
 }

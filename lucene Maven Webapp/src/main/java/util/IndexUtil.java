@@ -14,7 +14,9 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.FieldType;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -37,7 +39,26 @@ public class IndexUtil {
 	private static Map<String,Analyzer> fieldAnalyzer=new HashMap<String,Analyzer>();//可以考虑将分词器信息写入XML文件中解析
 	private static final ThreadLocal<IndexWriter> t=new ThreadLocal<IndexWriter>();
 	private static final ThreadLocal<IndexReader> r=new ThreadLocal<IndexReader>();
+	public static FieldType snameType;
+	public static FieldType fnameType;
+	public static FieldType unameType;
 	static{
+		snameType=new FieldType();
+		snameType.setOmitNorms(true);
+		snameType.setStored(true);
+		snameType.setStoreTermVectors(false);
+		snameType.setIndexOptions(IndexOptions.DOCS);
+		fnameType=new FieldType();
+		fnameType.setOmitNorms(false);
+		fnameType.setStored(true);
+		fnameType.setStoreTermVectors(true);
+		fnameType.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
+		unameType=new FieldType();
+		unameType.setOmitNorms(true);
+		unameType.setStored(true);
+		unameType.setStoreTermVectors(false);
+		unameType.setTokenized(false);
+		unameType.setIndexOptions(IndexOptions.NONE);
 		InputStream is=null;
 		try{
 			is=IndexUtil.class.getResourceAsStream("/index.properties");
