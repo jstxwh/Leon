@@ -1,0 +1,20 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+  <display-name>Saka's Web System</display-name>
+    <filter>
+  	<filter-name>CharacterEncodingFilter</filter-name>
+  	<filter-class>filter.CharacterEncodingFilter</filter-class>
+  	<!-- 初始化参数可以在过滤器代码中直接获取，底层就是简单的xml解析 -->
+  	<init-param>
+  			<param-name>encode</param-name>
+  			<param-value>UTF-8</param-value>
+  	</init-param>
+  </filter>
+  <filter-mapping>
+  	<filter-name>CharacterEncodingFilter</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+</web-app>
